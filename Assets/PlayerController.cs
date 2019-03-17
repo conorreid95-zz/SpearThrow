@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerController : MonoBehaviour
 {
     public GameObject spear;
@@ -16,10 +17,13 @@ public class PlayerController : MonoBehaviour
     float keyDownTime = 0.25f;
     float startTime = 0f;
 
+    
 
     // Start is called before the first frame update
     void Start()
     {
+        
+
         rend = GetComponent<Renderer>();
         white_Material = GetComponent<Renderer>().material;
 
@@ -40,7 +44,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0))
             {
-                rigidbody.AddRelativeForce(Vector3.left * 3800f * Time.deltaTime);
+                rigidbody.AddRelativeForce(Vector3.left * 4300f * Time.deltaTime);
                 startTime = Time.time;
                 if (lean)
                 {
@@ -76,28 +80,36 @@ public class PlayerController : MonoBehaviour
             {
                 if (!spearReleased)
                 {
+                    spearReleased = true;
 
-                    transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                    transform.eulerAngles = new Vector3(0f, 0f, 0f); //reset player stance to normal
+
                     Vector3 playerVelocity = rigidbody.velocity;
                     float normalisedVelocity = playerVelocity.x; //only care about x value of player (run up speed)
                     normalisedVelocity = Mathf.Abs(normalisedVelocity); //get abs value becaus it's negative
-                    normalisedVelocity = normalisedVelocity * 150f; //multiply to get a force to add onto throw
+                    print("Normalised vel: " + normalisedVelocity.ToString());
+                    normalisedVelocity = normalisedVelocity * 6f; //multiply to get a force to add onto throw
 
                     white_Material.color = Color.white;
                     spear.transform.parent = null;
-                    spear.AddComponent<Rigidbody>();
-                    spear.GetComponent<Rigidbody>().mass = 0.1f;
-                    spear.GetComponent<Rigidbody>().AddRelativeForce(Vector3.up * (3000f + normalisedVelocity) * Time.deltaTime); //add throw force to spear
-                    spearReleased = true;
-                    rigidbody.drag = 3; //add drag to player after throw
+                    spear.GetComponent<FallTowardsGround>().enabled = true;
+                    //spear.AddComponent<Rigidbody>();
+                    //spear.GetComponent<Rigidbody>().mass = 0.1f;
+                    spear.GetComponent<Rigidbody>().useGravity = true;
+                    spear.GetComponent<Rigidbody>().isKinematic = false;
+                    spear.GetComponent<Rigidbody>().AddRelativeForce(Vector3.up * (35f + normalisedVelocity)); //add throw force to spear
+                    rigidbody.drag = 5; //add drag to player after throw
+                    print("Threw spear with extra velocity of " + normalisedVelocity.ToString());
                 }
             }
             else if(!spearReleased)
             {
                 
-                spear.transform.RotateAround(transform.localPosition, new Vector3(0f, 00f, -90f), Time.deltaTime * 60f); //spear not released yet to rotate it upwards until released
+                spear.transform.RotateAround(transform.localPosition, new Vector3(0f, 00f, -90f), Time.deltaTime * 70f); //spear not released yet to rotate it upwards until released
             }
         }
 
     }
+
+    
 }
