@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         GetInput();
-        Camera.main.transform.position = new Vector3(transform.position.x + 4.78023f, 3.21062f, 2.325678f);
+        
         //Camera.main.transform.Translate(transform.position.x + 4.78023f, 3.21062f, 2.325678f);
     }
 
@@ -81,14 +81,14 @@ public class PlayerController : MonoBehaviour
                 if (!spearReleased)
                 {
                     spearReleased = true;
-
-                    transform.eulerAngles = new Vector3(0f, 0f, 0f); //reset player stance to normal
+                    Invoke("ChangeCameraToSpear", 0.5f);
+                    transform.eulerAngles = new Vector3(0f, 0f, 20f); //reset player stance to normal
 
                     Vector3 playerVelocity = rigidbody.velocity;
                     float normalisedVelocity = playerVelocity.x; //only care about x value of player (run up speed)
                     normalisedVelocity = Mathf.Abs(normalisedVelocity); //get abs value becaus it's negative
                     print("Normalised vel: " + normalisedVelocity.ToString());
-                    normalisedVelocity = normalisedVelocity * 6f; //multiply to get a force to add onto throw
+                    normalisedVelocity = normalisedVelocity * 8f; //multiply to get a force to add onto throw
 
                     white_Material.color = Color.white;
                     spear.transform.parent = null;
@@ -97,6 +97,7 @@ public class PlayerController : MonoBehaviour
                     //spear.GetComponent<Rigidbody>().mass = 0.1f;
                     spear.GetComponent<Rigidbody>().useGravity = true;
                     spear.GetComponent<Rigidbody>().isKinematic = false;
+                    spear.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
                     spear.GetComponent<Rigidbody>().AddRelativeForce(Vector3.up * (35f + normalisedVelocity)); //add throw force to spear
                     rigidbody.drag = 5; //add drag to player after throw
                     print("Threw spear with extra velocity of " + normalisedVelocity.ToString());
@@ -111,5 +112,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    
+    private void ChangeCameraToSpear()
+    {
+        GameObject.Find("GameController").GetComponent<GameController>().followSpear = true;
+    }
+
+
+
 }

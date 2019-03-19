@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,13 +9,12 @@ public class FallTowardsGround : MonoBehaviour
     Rigidbody rigidbody;
     bool collided = false;
     Vector3 spearVelocity;
-
-    int currentSceneIndex;
-
+    GameObject gameController;
+    
     // Start is called before the first frame update
     void Start()
     {
-        currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        gameController = GameObject.Find("GameController");
         rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -28,7 +28,7 @@ public class FallTowardsGround : MonoBehaviour
         if (normalisedVelocity < 5f && !collided)
         {
             print("Spear y is negative");
-            transform.RotateAround(transform.localPosition, new Vector3(0f, 00f, 90f), Time.deltaTime * 45f); //spear not released yet to rotate it upwards until released
+            transform.RotateAround(transform.localPosition, new Vector3(0f, 00f, 90f), Time.deltaTime * 35f); //spear not released yet to rotate it upwards until released
         }
 
 
@@ -41,13 +41,14 @@ public class FallTowardsGround : MonoBehaviour
         rigidbody.freezeRotation = true;
         rigidbody.constraints = RigidbodyConstraints.FreezeAll;
 
-        Invoke("LoadCurrentLevel", 5f);
+        print("Contact point: "+collision.GetContact(0).point.ToString());
+        float distance = Vector3.Distance(collision.GetContact(0).point, new Vector3(41.09f, 0f, 0f));
+
+        if(collision.GetContact(0).point.x > 41.09f) { distance = 0f; }
+        gameController.GetComponent<GameController>().ProcessNewScore(distance); //call function on gameController with distance data
+        
     }
 
-    private void LoadCurrentLevel()
-    {
-        SceneManager.LoadScene(currentSceneIndex);
-
-    }
+    
 
 }
