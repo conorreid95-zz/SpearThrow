@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
-
+using System;
 
 public class GameController : MonoBehaviour
 {
@@ -26,7 +26,8 @@ public class GameController : MonoBehaviour
             Destroy(this.gameObject);
         }
         DontDestroyOnLoad(this.gameObject);
-        
+
+        Application.targetFrameRate = 60;
     }
 
     // Start is called before the first frame update
@@ -50,10 +51,12 @@ public class GameController : MonoBehaviour
             spear = GameObject.Find("Spear");
         }
 
-        
+
+        CheckDebugKeys();
 
     }
 
+    
     void FixedUpdate()
     {
         if (!followSpear)
@@ -73,7 +76,7 @@ public class GameController : MonoBehaviour
         {
             spear = GameObject.Find("Spear");
         }
-        Vector3 desiredPosition = new Vector3(spear.transform.position.x + 4.78023f, spear.transform.position.y, 2.325678f);
+        Vector3 desiredPosition = new Vector3(spear.transform.position.x + 3f, spear.transform.position.y + 0.5f, 2f);
         Vector3 smoothedPosition = Vector3.Lerp(Camera.main.transform.position, desiredPosition, 0.3f);
         Camera.main.transform.position = smoothedPosition;
     }
@@ -91,13 +94,20 @@ public class GameController : MonoBehaviour
 
     public void ProcessNewScore(float newScore)
     {
-        
-        GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last Score: " + newScore.ToString("0.00");
-        if (newScore > highScore)
+        if(player.GetComponent<PlayerController>().pastLine == true)
         {
-            GameObject.Find("HighScore").GetComponent<TextMeshProUGUI>().text = "High Score: " + newScore.ToString("0.00");
-            highScore = newScore;
+            GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last: " + "Fault";
         }
+        else
+        {
+            GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last: " + newScore.ToString("0.00") + "m";
+            if (newScore > highScore)
+            {
+                GameObject.Find("HighScore").GetComponent<TextMeshProUGUI>().text = "Best: " + newScore.ToString("0.00") + "m";
+                highScore = newScore;
+            }
+        }
+        
 
         Invoke("LoadCurrentLevel", 0.5f);
     }
@@ -108,5 +118,14 @@ public class GameController : MonoBehaviour
         followSpear = false;
 
     }
+
+    private void CheckDebugKeys()
+    {
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
+    }
+
 
 }
