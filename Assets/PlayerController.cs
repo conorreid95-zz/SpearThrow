@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Mouse0)) //if throw is released
+            if ((Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Mouse0)) || (!spearReleased && (spear.transform.rotation.eulerAngles.z < 1f))) //if throw is released
             {
                 if (!spearReleased)
                 {
