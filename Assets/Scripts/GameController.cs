@@ -7,16 +7,20 @@ using System;
 
 public class GameController : MonoBehaviour
 {
-    enum CurrentSport { None, Javelin, LongJump}
+    enum CurrentSport { None, Javelin, LongJump, Sprint}
 
     float highJavelinScore = 0f;
     float lastJavelinScore = 0f;
     float LJHighScore = 0f;
     float LJLastScore = 0f;
+    float sprintHighScore = 0f;
+    float sprintLastScore = 0f;
 
 
     int javelinAttempts = 0;
     int longJumpAttempts = 0;
+    int sprintAttempts = 0;
+
 
     int currentSceneIndex;
 
@@ -53,6 +57,10 @@ public class GameController : MonoBehaviour
         {
             currentSport = CurrentSport.LongJump;
         }
+        else if (currentSceneIndex == 2)
+        {
+            currentSport = CurrentSport.Sprint;
+        }
         DontDestroyOnLoad(this);
     }
 
@@ -68,6 +76,11 @@ public class GameController : MonoBehaviour
         {
             currentSport = CurrentSport.LongJump;
         }
+        else if (currentSceneIndex == 2)
+        {
+            currentSport = CurrentSport.Sprint;
+        }
+
         if (currentSport == CurrentSport.Javelin)
         {
             if (player == null)
@@ -86,7 +99,14 @@ public class GameController : MonoBehaviour
                 player = GameObject.Find("Capsule");
             }
         }
-        
+        else if (currentSport == CurrentSport.Sprint)
+        {
+            if (player == null)
+            {
+                player = GameObject.Find("Capsule");
+            }
+        }
+
         CheckDebugKeys();
 
     }
@@ -109,7 +129,11 @@ public class GameController : MonoBehaviour
         {
             FollowPlayer();
         }
-        
+        else if (currentSport == CurrentSport.Sprint)
+        {
+            FollowPlayer();
+        }
+
     }
 
     private void FollowSpear()
@@ -142,7 +166,13 @@ public class GameController : MonoBehaviour
             Vector3 smoothedPositionLongJump = Vector3.Lerp(Camera.main.transform.position, desiredPositionLongJump, 0.40f);
             Camera.main.transform.position = smoothedPositionLongJump;
         }
-        
+        else if (currentSport == CurrentSport.Sprint)
+        {
+            Vector3 desiredPositionSprint = new Vector3(player.transform.position.x - 5f, player.transform.position.y + 3f, -46.782f);
+            Vector3 smoothedPositionSprint = Vector3.Lerp(Camera.main.transform.position, desiredPositionSprint, 0.40f);
+            Camera.main.transform.position = smoothedPositionSprint;
+        }
+
     }
 
     public void ProcessNewJavelinScore(float newScore)
@@ -203,6 +233,28 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void ProcessNewSprintScore(float newScore)
+    {
+        sprintLastScore = newScore;
+        sprintAttempts++;
+
+        GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last: " + sprintLastScore.ToString("0.00") + " sec";
+        if (sprintLastScore > sprintHighScore)
+        {
+            GameObject.Find("HighScore").GetComponent<TextMeshProUGUI>().text = "Best: " + sprintLastScore.ToString("0.00") + "sec";
+            sprintHighScore = sprintLastScore;
+        }
+
+        if (sprintAttempts < 3)
+        {
+            Invoke("LoadCurrentLevel", 0.5f);
+        }
+        else
+        {
+            Invoke("LoadScene0", 1f);
+        }
+    }
+
     public void LoadCurrentLevel()
     {
 
@@ -229,6 +281,18 @@ public class GameController : MonoBehaviour
         longJumpAttempts = 0;
         Physics.gravity = new Vector3(0f, -9.81f, 0f);
         SceneManager.LoadScene(0);
+        UpdateHighScore();
+    }
+
+    public void LoadScene2()
+    {
+
+        followSpear = false;
+        javelinAttempts = 0;
+        longJumpAttempts = 0;
+        sprintAttempts = 0;
+        Physics.gravity = new Vector3(0f, -9.81f, 0f);
+        SceneManager.LoadScene(2);
         UpdateHighScore();
     }
 
