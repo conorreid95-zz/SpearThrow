@@ -7,19 +7,27 @@ using System;
 
 public class GameController : MonoBehaviour
 {
-    enum CurrentSport { None, Javelin, LongJump, Sprint}
+    enum CurrentSport { None, Javelin, LongJump, Sprint, Hurdle }
 
     float highJavelinScore = 0f;
     float lastJavelinScore = 0f;
     float LJHighScore = 0f;
     float LJLastScore = 0f;
-    float sprintHighScore = 0f;
-    float sprintLastScore = 0f;
+
+
+    int sprintHighScore = 0;
+    int sprintLastScore = 0;
+    public int sprintCurrentPos = 0;
+
+    int hurdleHighScore = 0;
+    int hurdleLastScore = 0;
+    public int hurdleCurrentPos = 0;
 
 
     int javelinAttempts = 0;
     int longJumpAttempts = 0;
     int sprintAttempts = 0;
+    int hurdleAttempts = 0;
 
 
     int currentSceneIndex;
@@ -29,6 +37,9 @@ public class GameController : MonoBehaviour
     GameObject player;
     GameObject spear;
     public bool followSpear = false;
+
+    GameObject highScoreText;
+    GameObject lastScoreText;
 
     CurrentSport currentSport = CurrentSport.None;
     private void Awake()
@@ -47,10 +58,14 @@ public class GameController : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Capsule");
-        spear = GameObject.Find("Spear");
+
+        highScoreText = GameObject.Find("HighScore");
+        lastScoreText = GameObject.Find("LastScore");
+
         currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         if(currentSceneIndex == 0)
         {
+            spear = GameObject.Find("Spear");
             currentSport = CurrentSport.Javelin;
         }
         else if(currentSceneIndex == 1)
@@ -60,6 +75,10 @@ public class GameController : MonoBehaviour
         else if (currentSceneIndex == 2)
         {
             currentSport = CurrentSport.Sprint;
+        }
+        else if (currentSceneIndex == 3)
+        {
+            currentSport = CurrentSport.Hurdle;
         }
         DontDestroyOnLoad(this);
     }
@@ -79,6 +98,10 @@ public class GameController : MonoBehaviour
         else if (currentSceneIndex == 2)
         {
             currentSport = CurrentSport.Sprint;
+        }
+        else if (currentSceneIndex == 3)
+        {
+            currentSport = CurrentSport.Hurdle;
         }
 
         if (currentSport == CurrentSport.Javelin)
@@ -100,6 +123,13 @@ public class GameController : MonoBehaviour
             }
         }
         else if (currentSport == CurrentSport.Sprint)
+        {
+            if (player == null)
+            {
+                player = GameObject.Find("Capsule");
+            }
+        }
+        else if (currentSport == CurrentSport.Hurdle)
         {
             if (player == null)
             {
@@ -133,6 +163,12 @@ public class GameController : MonoBehaviour
         {
             FollowPlayer();
         }
+        else if (currentSport == CurrentSport.Hurdle)
+        {
+            FollowPlayer();
+        }
+
+        UpdateHighScore();
 
     }
 
@@ -172,6 +208,12 @@ public class GameController : MonoBehaviour
             Vector3 smoothedPositionSprint = Vector3.Lerp(Camera.main.transform.position, desiredPositionSprint, 0.40f);
             Camera.main.transform.position = smoothedPositionSprint;
         }
+        else if (currentSport == CurrentSport.Hurdle)
+        {
+            Vector3 desiredPositionSprint = new Vector3(player.transform.position.x - 5f, player.transform.position.y + 3f, -46.782f);
+            Vector3 smoothedPositionSprint = Vector3.Lerp(Camera.main.transform.position, desiredPositionSprint, 0.40f);
+            Camera.main.transform.position = smoothedPositionSprint;
+        }
 
     }
 
@@ -180,15 +222,13 @@ public class GameController : MonoBehaviour
         javelinAttempts++;
         if(player.GetComponent<PlayerController>().pastLine == true)
         {
-            GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last: " + "Fault";
+            lastJavelinScore = 0f;
         }
         else
         {
             lastJavelinScore = newScore;
-            GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last: " + lastJavelinScore.ToString("0.00") + "m";
             if (lastJavelinScore > highJavelinScore)
             {
-                GameObject.Find("HighScore").GetComponent<TextMeshProUGUI>().text = "Best: " + newScore.ToString("0.00") + "m";
                 highJavelinScore = newScore;
             }
         }
@@ -208,16 +248,15 @@ public class GameController : MonoBehaviour
     {
         LJLastScore = newScore;
         longJumpAttempts++;
+
         if (player.GetComponent<PlayerControllerLongJump>().pastLongJumpLine == true)
         {
-            GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last: " + "Fault";
+            LJLastScore = 0f;
         }
         else
         {
-            GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last: " + LJLastScore.ToString("0.00") + "m";
             if (LJLastScore > LJHighScore)
             {
-                GameObject.Find("HighScore").GetComponent<TextMeshProUGUI>().text = "Best: " + LJLastScore.ToString("0.00") + "m";
                 LJHighScore = LJLastScore;
             }
         }
@@ -229,23 +268,41 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            Invoke("LoadScene0", 0.5f);
+            Invoke("LoadScene2", 0.5f);
         }
     }
 
-    public void ProcessNewSprintScore(float newScore)
+    public void ProcessNewSprintScore(int newPlace)
     {
-        sprintLastScore = newScore;
+        sprintLastScore = newPlace;
         sprintAttempts++;
-
-        GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last: " + sprintLastScore.ToString("0.00") + " sec";
-        if (sprintLastScore > sprintHighScore)
+        
+        if (sprintLastScore < sprintHighScore || sprintHighScore == 0)
         {
-            GameObject.Find("HighScore").GetComponent<TextMeshProUGUI>().text = "Best: " + sprintLastScore.ToString("0.00") + "sec";
             sprintHighScore = sprintLastScore;
         }
 
-        if (sprintAttempts < 3)
+        if (sprintAttempts < 2)
+        {
+            Invoke("LoadCurrentLevel", 0.5f);
+        }
+        else
+        {
+            Invoke("LoadScene3", 1f);
+        }
+    }
+
+    public void ProcessNewHurdleScore(int newPlace)
+    {
+        hurdleLastScore = newPlace;
+        hurdleAttempts++;
+        
+        if (hurdleLastScore < hurdleHighScore || hurdleHighScore == 0)
+        {
+            hurdleHighScore = hurdleLastScore;
+        }
+
+        if (hurdleAttempts < 2)
         {
             Invoke("LoadCurrentLevel", 0.5f);
         }
@@ -263,16 +320,6 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void LoadScene1()
-    {
-
-        followSpear = false;
-        javelinAttempts = 0;
-        longJumpAttempts = 0;
-        SceneManager.LoadScene(1);
-        UpdateHighScore();
-    }
-
     public void LoadScene0()
     {
 
@@ -281,8 +328,17 @@ public class GameController : MonoBehaviour
         longJumpAttempts = 0;
         Physics.gravity = new Vector3(0f, -9.81f, 0f);
         SceneManager.LoadScene(0);
-        UpdateHighScore();
     }
+    public void LoadScene1()
+    {
+
+        followSpear = false;
+        javelinAttempts = 0;
+        longJumpAttempts = 0;
+        SceneManager.LoadScene(1);
+    }
+
+    
 
     public void LoadScene2()
     {
@@ -293,7 +349,18 @@ public class GameController : MonoBehaviour
         sprintAttempts = 0;
         Physics.gravity = new Vector3(0f, -9.81f, 0f);
         SceneManager.LoadScene(2);
-        UpdateHighScore();
+    }
+
+    public void LoadScene3()
+    {
+
+        followSpear = false;
+        javelinAttempts = 0;
+        longJumpAttempts = 0;
+        sprintAttempts = 0;
+        hurdleAttempts = 0;
+        Physics.gravity = new Vector3(0f, -9.81f, 0f);
+        SceneManager.LoadScene(3);
     }
 
     private void CheckDebugKeys()
@@ -306,17 +373,53 @@ public class GameController : MonoBehaviour
 
     public void UpdateHighScore()
     {
-        if(currentSport == CurrentSport.LongJump)
+        if(currentSport == CurrentSport.Javelin)
         {
-            GameObject.Find("HighScore").GetComponent<TextMeshProUGUI>().text = "Best: " + highJavelinScore.ToString("0.00") + "m";
-            GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last: " + "0.00m";
+            highScoreText.GetComponent<TextMeshProUGUI>().text = "Best: " + highJavelinScore.ToString("0.00") + "m";
+            lastScoreText.GetComponent<TextMeshProUGUI>().text = "Last: " + lastJavelinScore.ToString("0.00") + "m";
         }
-        else if(currentSport == CurrentSport.Javelin)
+        else if(currentSport == CurrentSport.LongJump)
         {
-            GameObject.Find("HighScore").GetComponent<TextMeshProUGUI>().text = "Best: " + LJHighScore.ToString("0.00") + "m";
-            GameObject.Find("LastScore").GetComponent<TextMeshProUGUI>().text = "Last: " + "0.00m";
+            highScoreText.GetComponent<TextMeshProUGUI>().text = "Best: " + LJHighScore.ToString("0.00") + "m";
+            lastScoreText.GetComponent<TextMeshProUGUI>().text = "Last: " + LJLastScore.ToString("0.00") + "m";
+        }
+        else if (currentSport == CurrentSport.Sprint)
+        {
+            highScoreText.GetComponent<TextMeshProUGUI>().text = "Best: " + AddOrdinal(sprintHighScore);
+            lastScoreText.GetComponent<TextMeshProUGUI>().text = "Pos: " + AddOrdinal(sprintCurrentPos);
+        }
+        else if (currentSport == CurrentSport.Hurdle)
+        {
+            highScoreText.GetComponent<TextMeshProUGUI>().text = "Best: " + AddOrdinal(hurdleHighScore);
+            lastScoreText.GetComponent<TextMeshProUGUI>().text = "Pos: " + AddOrdinal(hurdleCurrentPos);
         }
     }
 
+
+    public static string AddOrdinal(int num)
+    {
+        if (num <= 0) return num.ToString();
+
+        switch (num % 100)
+        {
+            case 11:
+            case 12:
+            case 13:
+                return num + "th";
+        }
+
+        switch (num % 10)
+        {
+            case 1:
+                return num + "st";
+            case 2:
+                return num + "nd";
+            case 3:
+                return num + "rd";
+            default:
+                return num + "th";
+        }
+
+    }
 
 }

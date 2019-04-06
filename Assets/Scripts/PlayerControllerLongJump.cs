@@ -115,6 +115,7 @@ public class PlayerControllerLongJump : MonoBehaviour
 
                     print("Time: " + Time.time.ToString());
                     runSequenceStarted = true;
+                    transform.localScale = new Vector3(1f, 0.92f, 1f);
                 }
             }
 
@@ -125,6 +126,7 @@ public class PlayerControllerLongJump : MonoBehaviour
             {
                 if (!jumpReleased)
                 {
+                    transform.localScale = new Vector3(1f, 1f, 1f);
                     jumpReleased = true;
                     transform.RotateAround(transform.localPosition, new Vector3(-90f, 0f, 0f), Time.deltaTime * 995f);
                     Vector3 playerVelocity = rigidbody.velocity;

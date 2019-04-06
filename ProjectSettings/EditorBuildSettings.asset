@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Sprint.unity
     guid: 66eaef83cd3c11e4abaab998199b22ce
+  - enabled: 1
+    path: Assets/Scenes/Hurdles.unity
+    guid: 829ffe210e0174a4eacd01ebc2b35a9d
   m_configObjects: {}

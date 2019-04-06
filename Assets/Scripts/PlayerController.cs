@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour
                     spearReleased = true;
                     Invoke("ChangeCameraToSpear", 0.5f);
 
-                    
+                    transform.localScale = new Vector3(1f, 1f, 1f);
                     //transform.eulerAngles = new Vector3(0f, 0f, 20f); //reset player stance to normal
 
                     Vector3 playerVelocity = rigidbody.velocity;
@@ -147,6 +147,7 @@ public class PlayerController : MonoBehaviour
             }
             else if(!spearReleased)
             {
+                transform.localScale = new Vector3(1f, 0.9f, 1f);
                 Quaternion _playerTargetRotation;
                 _playerTargetRotation = Quaternion.Euler(0f,0f,-15f);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, _playerTargetRotation, 120f * Time.deltaTime);

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - DontDestroy
   - Runway
+  - Hurdle
+  - Opponent
   layers:
   - Default
   - TransparentFX
