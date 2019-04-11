@@ -57,49 +57,56 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+
         player = GameObject.Find("Capsule");
 
         highScoreText = GameObject.Find("HighScore");
         lastScoreText = GameObject.Find("LastScore");
 
         currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        if(currentSceneIndex == 0)
+        if(currentSceneIndex == 1)
         {
             spear = GameObject.Find("Spear");
             currentSport = CurrentSport.Javelin;
         }
-        else if(currentSceneIndex == 1)
+        else if(currentSceneIndex == 2)
         {
             currentSport = CurrentSport.LongJump;
         }
-        else if (currentSceneIndex == 2)
+        else if (currentSceneIndex == 3)
         {
             currentSport = CurrentSport.Sprint;
         }
-        else if (currentSceneIndex == 3)
+        else if (currentSceneIndex == 4)
         {
             currentSport = CurrentSport.Hurdle;
         }
         DontDestroyOnLoad(this);
+
+        highJavelinScore = PlayerPrefs.GetFloat("JavelinHighScore", 0f);
+        LJHighScore = PlayerPrefs.GetFloat("LongJumpHighScore", 0f);
+        sprintHighScore = PlayerPrefs.GetInt("SprintHighScore", 0);
+        hurdleHighScore = PlayerPrefs.GetInt("HurdlesHighScore", 0);
     }
 
     // Update is called once per frame
     void Update()
     {
         currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        if(currentSceneIndex == 0)
+        if(currentSceneIndex == 1)
         {
             currentSport = CurrentSport.Javelin;
         }
-        else if(currentSceneIndex == 1)
+        else if(currentSceneIndex == 2)
         {
             currentSport = CurrentSport.LongJump;
         }
-        else if (currentSceneIndex == 2)
+        else if (currentSceneIndex == 3)
         {
             currentSport = CurrentSport.Sprint;
         }
-        else if (currentSceneIndex == 3)
+        else if (currentSceneIndex == 4)
         {
             currentSport = CurrentSport.Hurdle;
         }
@@ -230,16 +237,17 @@ public class GameController : MonoBehaviour
             if (lastJavelinScore > highJavelinScore)
             {
                 highJavelinScore = newScore;
+                PlayerPrefs.SetFloat("JavelinHighScore", highJavelinScore);
             }
         }
         
-        if(javelinAttempts < 3)
+        if(javelinAttempts < 50)
         {
             Invoke("LoadCurrentLevel", 0.5f);
         }
         else
         {
-            Invoke("LoadScene1", 0.5f);
+            Invoke("LoadLJScene", 0.5f);
         }
         
     }
@@ -258,17 +266,18 @@ public class GameController : MonoBehaviour
             if (LJLastScore > LJHighScore)
             {
                 LJHighScore = LJLastScore;
+                PlayerPrefs.SetFloat("LongJumpHighScore", LJHighScore);
             }
         }
 
 
-        if (longJumpAttempts < 3)
+        if (longJumpAttempts < 50)
         {
             Invoke("LoadCurrentLevel", 0.5f);
         }
         else
         {
-            Invoke("LoadScene2", 0.5f);
+            Invoke("LoadSprintScene", 0.5f);
         }
     }
 
@@ -280,15 +289,16 @@ public class GameController : MonoBehaviour
         if (sprintLastScore < sprintHighScore || sprintHighScore == 0)
         {
             sprintHighScore = sprintLastScore;
+            PlayerPrefs.SetInt("SprintHighScore", sprintHighScore);
         }
 
-        if (sprintAttempts < 2)
+        if (sprintAttempts < 50)
         {
             Invoke("LoadCurrentLevel", 0.5f);
         }
         else
         {
-            Invoke("LoadScene3", 1f);
+            Invoke("LoadHurdleScene", 1f);
         }
     }
 
@@ -300,15 +310,16 @@ public class GameController : MonoBehaviour
         if (hurdleLastScore < hurdleHighScore || hurdleHighScore == 0)
         {
             hurdleHighScore = hurdleLastScore;
+            PlayerPrefs.SetInt("HurdlesHighScore", hurdleHighScore);
         }
 
-        if (hurdleAttempts < 2)
+        if (hurdleAttempts < 50)
         {
             Invoke("LoadCurrentLevel", 0.5f);
         }
         else
         {
-            Invoke("LoadScene0", 1f);
+            Invoke("LoadJavelinScene", 1f);
         }
     }
 
@@ -320,27 +331,27 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void LoadScene0()
+    public void LoadJavelinScene()
     {
 
         followSpear = false;
         javelinAttempts = 0;
         longJumpAttempts = 0;
         Physics.gravity = new Vector3(0f, -9.81f, 0f);
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
-    public void LoadScene1()
+    public void LoadLJScene()
     {
 
         followSpear = false;
         javelinAttempts = 0;
         longJumpAttempts = 0;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
 
     
 
-    public void LoadScene2()
+    public void LoadSprintScene()
     {
 
         followSpear = false;
@@ -348,10 +359,10 @@ public class GameController : MonoBehaviour
         longJumpAttempts = 0;
         sprintAttempts = 0;
         Physics.gravity = new Vector3(0f, -9.81f, 0f);
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(3);
     }
 
-    public void LoadScene3()
+    public void LoadHurdleScene()
     {
 
         followSpear = false;
@@ -360,7 +371,7 @@ public class GameController : MonoBehaviour
         sprintAttempts = 0;
         hurdleAttempts = 0;
         Physics.gravity = new Vector3(0f, -9.81f, 0f);
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene(4);
     }
 
     private void CheckDebugKeys()
@@ -421,5 +432,6 @@ public class GameController : MonoBehaviour
         }
 
     }
+
 
 }
