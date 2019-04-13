@@ -243,11 +243,11 @@ public class GameController : MonoBehaviour
         
         if(javelinAttempts < 50)
         {
-            Invoke("LoadCurrentLevel", 0.5f);
+            Invoke("LoadCurrentLevel", 1f);
         }
         else
         {
-            Invoke("LoadLJScene", 0.5f);
+            Invoke("LoadLJScene", 1f);
         }
         
     }
@@ -273,11 +273,11 @@ public class GameController : MonoBehaviour
 
         if (longJumpAttempts < 50)
         {
-            Invoke("LoadCurrentLevel", 0.5f);
+            Invoke("LoadCurrentLevel", 1f);
         }
         else
         {
-            Invoke("LoadSprintScene", 0.5f);
+            Invoke("LoadSprintScene", 1f);
         }
     }
 
@@ -294,7 +294,7 @@ public class GameController : MonoBehaviour
 
         if (sprintAttempts < 50)
         {
-            Invoke("LoadCurrentLevel", 0.5f);
+            Invoke("LoadCurrentLevel", 1f);
         }
         else
         {

@@ -1,19 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SprintController : MonoBehaviour
 {
 
     GameObject gameController;
     Rigidbody rigidbody;
-
+    
     int racePosition = 0;
-
+    
     bool sprintSequenceStarted = false;
     bool lean = false;
     bool pastFinishLine = false;
     float startTime = 0f;
+    
+
 
     //public bool pastLongJumpLine = false;
     bool firstClicked = false;

@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour
                     spear.GetComponent<Rigidbody>().useGravity = true;
                     spear.GetComponent<Rigidbody>().isKinematic = false;
                     spear.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
-                    spear.GetComponent<Rigidbody>().AddRelativeForce(Vector3.up * (35f + normalisedVelocity)); //add throw force to spear
+                    spear.GetComponent<Rigidbody>().AddRelativeForce(Vector3.up * 60f * Time.deltaTime *(35f + normalisedVelocity)); //add throw force to spear
                     rigidbody.drag = 7; //add drag to player after throw
                     print("Threw spear with extra velocity of " + normalisedVelocity.ToString());
                 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1514012398}
-  m_IndirectSpecularColor: {r: 0.16066635, g: 0.13766286, b: 0.13404894, a: 1}
+  m_IndirectSpecularColor: {r: 0.16147408, g: 0.1379335, b: 0.13413364, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2370,7 +2370,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 477246063}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 1f1c9350366e35340a7a3825e78c2673, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 672f019799b0cda4daff9b417c1de9f4, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 1995524592}
@@ -2382,7 +2382,7 @@ VideoPlayer:
   m_AspectRatio: 1
   m_DataSource: 0
   m_PlaybackSpeed: 0.9
-  m_AudioOutputMode: 2
+  m_AudioOutputMode: 0
   m_TargetAudioSources:
   - {fileID: 0}
   m_DirectAudioVolumes:
@@ -9179,6 +9179,7 @@ GameObject:
   - component: {fileID: 1995524593}
   - component: {fileID: 1995524592}
   - component: {fileID: 1995524591}
+  - component: {fileID: 1995524594}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -9250,6 +9251,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 21.347, y: 159.279, z: 0}
+--- !u!114 &1995524594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995524590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4852690036ad4ba1d5f5543eb4080, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  videoPlayer: {fileID: 477246064}
 --- !u!1001 &1996377198
 PrefabInstance:
   m_ObjectHideFlags: 0

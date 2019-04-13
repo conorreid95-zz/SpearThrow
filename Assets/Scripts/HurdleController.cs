@@ -16,7 +16,7 @@ public class HurdleController : MonoBehaviour
     bool pastFinishLine = false;
     bool jumping = false;
 
-    float keyDownTime = 0.4f;
+    float keyDownTime = 0.3f;
     float startTime = 0f;
     
     bool firstClicked = false;

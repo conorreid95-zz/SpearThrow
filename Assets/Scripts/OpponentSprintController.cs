@@ -29,7 +29,7 @@ public class OpponentSprintController : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         StartCoroutine(waiter());
-        
+
     }
 
     // Update is called once per frame
@@ -55,8 +55,6 @@ public class OpponentSprintController : MonoBehaviour
         CheckPastLine();
         CheckForJump();
         CheckAirborne();
-
-        
     }
     
 
@@ -102,7 +100,7 @@ public class OpponentSprintController : MonoBehaviour
 
     IEnumerator waiter()
     {
-        for(int i = 0; i <200; i++)
+        for (int i = 0; i < 200; i++)
         {
             if (pastFinishLine == false && !airborne && !collidedWithHurdle)
             {
@@ -129,12 +127,13 @@ public class OpponentSprintController : MonoBehaviour
                     _playerTargetRightLean = Quaternion.Euler(6f, 0f, 0f);
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, _playerTargetRightLean, 560f * Time.deltaTime);
                 }
-                
+
             }
             yield return new WaitForSeconds(UnityEngine.Random.Range(0.12f, 0.35f));
 
 
         }
+        
     }
 
     private void OnCollisionEnter(Collision collision)

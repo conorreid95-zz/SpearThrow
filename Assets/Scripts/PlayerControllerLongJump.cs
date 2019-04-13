@@ -80,7 +80,7 @@ public class PlayerControllerLongJump : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0))
             {
                 firstClicked = true;
-                rigidbody.AddRelativeForce(Vector3.back * 4300f * Time.deltaTime);
+                rigidbody.AddRelativeForce(Vector3.back * 4500f * Time.deltaTime);
                 startTime = Time.time;
                 if (lean)
                 {
@@ -136,8 +136,8 @@ public class PlayerControllerLongJump : MonoBehaviour
                     //normalisedVelocity = normalisedVelocity * (8.25f + UnityEngine.Random.Range(0.5f, 2f)); //multiply to get a force to add onto throw
                     rigidbody.useGravity = true;
                     
-                    rigidbody.AddRelativeForce(Vector3.up*normalisedVelocity, ForceMode.VelocityChange);
-                    rigidbody.AddRelativeForce(Vector3.back * 2.5f, ForceMode.VelocityChange);
+                    rigidbody.AddRelativeForce(Vector3.up*normalisedVelocity * 2550f * Time.deltaTime, ForceMode.Force);
+                    rigidbody.AddRelativeForce(Vector3.back * 4.5f * 2550f * Time.deltaTime, ForceMode.Force);
                     Physics.gravity = new Vector3(0f, -22f, 0f);
 
                     rigidbody.drag = 1f;
